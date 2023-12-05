@@ -1,0 +1,300 @@
+function varargout = ZoomExample(varargin)
+% ZOOMEXAMPLE MATLAB code for ZoomExample.fig
+%      ZOOMEXAMPLE, by itself, creates a new ZOOMEXAMPLE or raises the existing
+%      singleton*.
+%
+%      H = ZOOMEXAMPLE returns the handle to a new ZOOMEXAMPLE or the handle to
+%      the existing singleton*.
+%
+%      ZOOMEXAMPLE('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in ZOOMEXAMPLE.M with the given input arguments.
+%
+%      ZOOMEXAMPLE('Property','Value',...) creates a new ZOOMEXAMPLE or raises the
+%      existing singleton*.  Starting from the left, property value pairs are
+%      applied to the GUI before ZoomExample_OpeningFcn gets called.  An
+%      unrecognized property name or invalid value makes property application
+%      stop.  All inputs are passed to ZoomExample_OpeningFcn via varargin.
+%
+%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
+%      instance to run (singleton)".
+%
+% See also: GUIDE, GUIDATA, GUIHANDLES
+
+% Edit the above text to modify the response to help ZoomExample
+
+% Last Modified by GUIDE v2.5 23-Dec-2020 06:43:42
+
+% Begin initialization code - DO NOT EDIT
+gui_Singleton = 1;
+gui_State = struct('gui_Name',       mfilename, ...
+                   'gui_Singleton',  gui_Singleton, ...
+                   'gui_OpeningFcn', @ZoomExample_OpeningFcn, ...
+                   'gui_OutputFcn',  @ZoomExample_OutputFcn, ...
+                   'gui_LayoutFcn',  [] , ...
+                   'gui_Callback',   []);
+if nargin && ischar(varargin{1})
+    gui_State.gui_Callback = str2func(varargin{1});
+end
+
+if nargout
+    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
+else
+    gui_mainfcn(gui_State, varargin{:});
+end
+% End initialization code - DO NOT EDIT
+
+
+% --- Executes just before ZoomExample is made visible.
+function ZoomExample_OpeningFcn(hObject, eventdata, handles, varargin)
+% This function has no output args, see OutputFcn.
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% varargin   command line arguments to ZoomExample (see VARARGIN)
+
+% Choose default command line output for ZoomExample
+handles.output = hObject;
+
+% Update handles structure
+guidata(hObject, handles);
+
+% UIWAIT makes ZoomExample wait for user response (see UIRESUME)
+% uiwait(handles.figure1);
+
+
+% x = linspace(-2*pi, 2*pi, 1000);
+% y = sin(x);
+% plot(handles.axes1, x,y);
+
+handles.hZoom = [];
+guidata(hObject, handles);
+
+% --- Outputs from this function are returned to the command line.
+function varargout = ZoomExample_OutputFcn(hObject, eventdata, handles) 
+% varargout  cell array for returning output args (see VARARGOUT);
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Get default command line output from handles structure
+varargout{1} = handles.output;
+
+
+% --- Executes on button press in pushbutton1.
+function pushbutton1_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+if isempty(handles.hZoom)
+    handles.hZoom = zoom;
+    guidata(hObject, handles);
+end
+
+if ~strcmp(get(handles.hZoom,'Enable'), 'on')
+    handles.axesLimits = get(handles.axes1,{'xlim','ylim'});
+    guidata(hObject, handles);
+    set(handles.hZoom, 'Enable', 'on');
+end
+
+
+% --- Executes on button press in pushbutton2.
+function pushbutton2_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+if ~isempty(handles.hZoom)
+    set(handles.hZoom, 'Enable', 'off');
+    set(handles.axes1, {'xlim','ylim'}, handles.axesLimits);
+end
+
+
+% --- Executes on button press in pushbutton3.
+function pushbutton3_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% x = linspace(-2*pi, 2*pi, 1000);
+% y = sin(x);
+% plot(handles.axes1, x,y);
+global n
+n=1;
+handles.hZoom = [];
+[Filename,Pathname]=uigetfile('*.txt','File Selector');
+name=strcat(Pathname,Filename);
+A=dlmread(name');
+[r c]=size(A);
+global y;
+global x;
+x=A(:,1);
+y=A(:,2);
+global i;
+i=1;
+for j=1:5
+ while (n==1)&& (i~=r)
+  plot(handles.axes1,x(i),y(i)) 
+  hold on
+  plot(handles.axes1,x(1:i),y(1:i))
+  xlabel(handles.axes1,'Time (M)');
+  ylabel(handles.axes1,'ECG (MV)');
+  %axis([0 10 -0.9 1.75])
+  pause(0.03)
+  global i;
+  i=i+1;
+ end
+ if i==r
+     break
+ else
+ global n;
+ n;
+ end
+ pause(0.5);
+end
+
+
+% --- Executes on button press in pushbutton4.
+function pushbutton4_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global n
+n=0;
+
+
+% --- Executes on slider movement.
+function slider1_Callback(hObject, eventdata, handles)
+% hObject    handle to slider1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+data=get(handles.slider1,'Value');
+view(handles.axes1,data,32);
+
+% --- Executes during object creation, after setting all properties.
+function slider1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to slider1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+% --- Executes on button press in pushbutton5.
+function pushbutton5_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global i;
+t=1:1:i;
+global y;
+yf=fft(y);
+plot(handles.axes2,t,yf);
+
+
+% --- Executes on button press in pushbutton6.
+function pushbutton6_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global y;
+hold on 
+fs=100;
+[b,a]=butter(1, 5/fs,'Z');  
+lowpass=filter(b, a, y);
+plot(handles.axes3,y)
+hold on;
+plot(handles.axes3,lowpass, 'r')
+
+
+% --- Executes on button press in pushbutton7.
+function pushbutton7_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton7 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global y;
+hold on 
+fs=100;
+[b,a]=butter(1, 30/fs,'Z');  
+h=filter(b, a, y);
+plot(handles.axes4,y)
+hold on;
+plot(handles.axes4,h, 'r')
+
+
+% --- Executes on button press in pushbutton8.
+function pushbutton8_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton8 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global y;
+global x;
+hold on 
+fs=100;
+[b,a]=butter(1, 5/fs,'Z');  
+lowpass=filter(b, a, y);
+hold on;
+ t=1:1:length(x);
+ yf=fft(lowpass);
+ plot(handles.axes6,t,yf);
+
+
+% --- Executes on button press in pushbutton9.
+function pushbutton9_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton9 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global y;
+global x;
+fs=100;
+[b,a]=butter(1, 30/fs,'Z');  
+h=filter(b, a, y);
+hold on;
+t=1:1:length(x);
+yf=fft(h);
+plot(handles.axes7,t,yf);
+
+
+% --- Executes on button press in pushbutton10.
+function pushbutton10_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton10 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global y;
+fs=100;
+[a,b] = butter(3,[0.78 0.99],'bandpass');
+bandpass=filter(a,b,y);
+plot(handles.axes5,y)
+hold on;
+plot(handles.axes5,bandpass,'r')
+
+
+% --- Executes on button press in pushbutton11.
+function pushbutton11_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton11 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global y;
+global x;
+fs=100;
+[a,b] = butter(3,[0.78 0.99],'bandpass');
+bandpass=filter(a,b,y);
+hold on;
+ t=1:1:length(x);
+ yf=fft(bandpass);
+ plot(handles.axes8,t,yf);
+
+
+% --- Executes on button press in pushbutton12.
+function pushbutton12_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton12 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global n;
+n=1;
+disp(n);
+
+

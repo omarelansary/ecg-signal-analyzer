@@ -1,0 +1,13 @@
+clear
+clc 
+ecg = load('ECG.txt');                                         
+t=ecg(:,1);
+s=ecg(:,2); 
+title('highpass filter');
+hold on 
+fs=100;
+[b,a]=butter(1, 30/fs,'Z');  
+h=filter(b, a, s);
+plot(s)
+hold on;
+plot(h, 'r')

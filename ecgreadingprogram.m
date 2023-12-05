@@ -1,0 +1,30 @@
+close all;
+clear all;
+clc
+A=dlmread('ECG.txt');
+[r c]=size(A);
+x=A(:,1);
+y=A(:,2);
+% for i=1:r
+%  plot(x(i),y(i)) 
+%  hold on
+%  plot(x(1:i),y(1:i))
+%  xlabel('Time (M)');
+%  ylabel('ECG (MV)');
+%  axis([0 10 -1 1.7])
+%  pause(0.03)
+% end
+%  M=max(x);
+%  disp(M);
+%  tm=1/M;
+%  disp(tm);
+% % f1=10;
+% for i=1:r
+%     f(i)=(1/x(i));
+% end
+% fm=max(f);
+% disp(fm);
+
+t=1:1:length(x);
+yf=fft(y);
+plot(t,yf);
