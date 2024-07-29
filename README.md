@@ -44,6 +44,6 @@ This MATLAB GUI is designed for ECG signal processing and supports loading any E
 2. Open MATLAB and navigate to the project directory.
 3. Run the main script:
    ```bash
-   run('GUI.m')
+   run('ECGGUI.m')
    ```
 
